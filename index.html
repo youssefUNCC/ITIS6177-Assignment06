@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Youssef Shehata - Week 03</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <style>
+        body{
+            padding: 3rem;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-12">
+                <label for="title">Title:</label>
+                    <input type="text" name="title" id="title">
+            </div>
+            <div class="col-xs-12">
+                <label for="author">Author:</label>
+                    <input type="text" name="author" id="author">
+            </div>
+            
+            <div class="col-xs-12">
+                <button type="button"
+                onclick="sendPost()"
+                class="btn btn-success">Send</button>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col xs-12" id="list"></div>
+    </div>    
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.25.0/axios.min.js" integrity="sha512-/Q6t3CASm04EliI1QyIDAA/nDo9R8FQ/BULoUFyN4n/BDdyIxeH7u++Z+eobdmr11gG5D/6nPFyDlnisDwhpYA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script>
+
+        function sendPost(){
+            const title = document.getElementById('title').value;
+            const author = document.getElementById('author').value;
+            const req = {
+                title,
+                author
+            };
+            axios.post('http://localhost:3004/posts', req)
+            .then(function (response) {
+                console.log(response);
+                document.getElementById('title').value = '';
+                document.getElementById('title').focus();
+                document.getElementById('author').value = '';
+                getPosts();
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
+        }
+    
+
+        function getPosts(){
+            axios.get('http://localhost:3004/posts')
+            .then(function(response){
+                const list = document.getElementById('list');
+                if (response && response.data){
+                    list.innerHTML = '';
+                    response.data.forEach(item => {
+                        list.innerHTML += '<br>' + item.title + ' :: ' + item.author;
+                    });
+                }
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
+        }
+
+        getPosts();
+
+
+    </script>
+
+</body>
+</html>
